@@ -2,9 +2,9 @@ const { DataTypes, Sequelize } = require('sequelize');
 
 module.exports = (sequelize) => {
   sequelize.define('Operation', {
-    concept: {
+    description: {
       type: DataTypes.STRING,
-      allowNull: false
+      // allowNull: false
     },
     amount: {
       type: DataTypes.INTEGER,

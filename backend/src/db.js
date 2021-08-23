@@ -3,6 +3,8 @@ const { Sequelize } = require('sequelize');
 const fs = require('fs');
 const path = require('path');
 const { DB_USER, DB_PASSWORD, DB_HOST, DB_NAME} = process.env;
+const bcrypt =require("bcrypt");
+
 
 const sequelize = new Sequelize(`postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}/${DB_NAME}`, {
   logging:false,
@@ -34,10 +36,19 @@ const { User } = sequelize.models;
 const { Category } = sequelize.models;
 const { Operation } = sequelize.models;
 
+User.beforeCreate((user, options) => {
+  return bcrypt.hash(user.password, 10)
+    .then(hash => {
+      user.password = hash;
+    }).catch(err => {
+      throw new Error(err);
+    })
+});
+
 // Relaciones
 User.hasMany(Operation, {as: 'Operations'})
-Operation.belongsTo(Category);
 Category.hasMany(Operation);
+Operation.belongsTo(Category);
 
 module.exports = {
   ...sequelize.models,

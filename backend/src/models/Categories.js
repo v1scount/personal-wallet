@@ -6,6 +6,11 @@ module.exports = (sequelize) => {
       type: DataTypes.STRING,
       allowNull: false
     },
+    type: {
+      type: DataTypes.ENUM,
+      values: ['Income', 'Outcome'],
+      allowNull: false
+    }
   }, {
     timestamps: true
   })

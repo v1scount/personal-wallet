@@ -1,11 +1,15 @@
 const server = require('express').Router();
+const passport = require('passport');
+const bcrypt =require("bcrypt")
+const jwt = require('jsonwebtoken');
 const { User } = require('../db.js');
-
 const cors = require('cors')
 server.use(cors());
+require('../passport-config')(passport)
 
 
-server.get('/', (req, res) => {
+// GET - All users
+server.get('/', /*passport.authenticate('jwt', {session: false}),*/ (req, res) => {
   User.findAll({
     include: {
       all: true
@@ -18,15 +22,14 @@ server.get('/', (req, res) => {
   });
 });
 
+// POST - Create User
 server.post('/', (req, res) => {
-  const {firstName, lastName, email, password, CategoryId, UserId} = req.body;
+  const {firstName, lastName, email, password} = req.body;
   User.create({
     firstName,
     lastName,
     email,
     password,
-    CategoryId,
-    UserId,
   }).then((users) => {
     res.status(200).json(users);
   }).catch((error) => {
@@ -34,5 +37,6 @@ server.post('/', (req, res) => {
     res.status(400).send(error);
   })
 });
+
 
 module.exports = server;
